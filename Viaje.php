@@ -310,12 +310,4 @@ class Viaje{
         return $msj;
     }
 
-    public function __toString(){
-       return "Id de Viaje: " . $this->getIdViaje() . 
-       "\nDestino: " . $this->getVDestino() . 
-       "\nCantidad Maxima de Pasajeros: " . $this->getVCantMaxPasajeros() . 
-       "\nEmpresa: " . $this->getObjEmpresa() . 
-       "\nResponsable: " . $this->getObjResponsable() . 
-       "\nPasajeros: " . $this->recorrerArray($this->getColPasajeros()) . "\n";
-    }
 }

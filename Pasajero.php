@@ -107,7 +107,6 @@ class Pasajero extends Persona{
     public function insertar() {
         $base = new BaseDatos();
         $resp = false;
-        if (!$this->buscar($this->getIdPasajero())) {
             if (parent::insertar()) {
                 $consultaInsert = "INSERT INTO pasajero(pdocumento, ptelefono, idviaje) VALUES 
                 (" .  $this->getDocumento() . ", '" .$this->getTelefono() . "', " . $this->getObjViaje()->getIdViaje() . ")";
@@ -121,7 +120,6 @@ class Pasajero extends Persona{
             } else {
                 $this->setMsjOperacion($base->getERROR());
             }
-        }
         return $resp;
     }
   /*   //modificar con el buscar pero no modifica el pasajero
@@ -195,7 +193,6 @@ class Pasajero extends Persona{
         $base = new BaseDatos();
         $resp = false;
         if ($base->Iniciar()) {
-                if ($this->buscar($this->getIdPasajero())) {
                     $consultaDelete = "DELETE FROM pasajero WHERE idpasajeros = " . $this->getIdPasajero();
                     if ($base->Ejecutar($consultaDelete)) {
                         if (parent::eliminar()) {
@@ -207,15 +204,7 @@ class Pasajero extends Persona{
                 } else {
                     $this->setMsjOperacion($base->getERROR());
                 }
-        }
         return $resp;
     }
-
-	public function __toString(){
-		return parent::__toString() . 
-        "\nId de pasajero: " .$this->getIdPasajero().
-		"\nTelefono: " . $this->getTelefono() . 
-		"\nId del Viaje: " . $this->getObjViaje() . "\n";
-	}
 
 }

@@ -116,7 +116,6 @@ class ResponsableV extends Persona {
     public function insertar() {
         $base = new BaseDatos();
         $resp = false;
-        if (!$this->buscar($this->getNroEmpleado())) {
             // Insertar primero en la tabla persona
             if (parent::insertar()) {
                 // Obtener el ID de la persona insertada
@@ -143,7 +142,6 @@ class ResponsableV extends Persona {
             } else {
                 $this->setMsjOperacion("Error al insertar en la tabla persona: " . parent::getMsjOperacion());
             }
-        }
         return $resp;
     }
 
@@ -210,7 +208,4 @@ class ResponsableV extends Persona {
         return $resp;
     }
 
-    public function __toString() {
-        return parent::__toString() . "\nNúmero de Empleado: " . $this->getNroEmpleado() . "\nNúmero de Licencia: " . $this->getNroLicencia() . "\n";
-    }
 }

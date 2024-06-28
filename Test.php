@@ -102,7 +102,9 @@ function menuDeEmpresa(){
                 $objEmp = new Empresa();
                 if ($objEmp->buscar($idEmp)) {//Busco le empresa con el id ingresado
                     echo "Empresa encontrada: \n";
-                    echo $objEmp . "\n";
+                    echo "Id de Empresa: " . $objEmp->getIdEmpresa() . "\n";
+                    echo "Nombre de Empresa: " . $objEmp->getNombre() . "\n";
+                    echo "Dirección: " . $objEmp->getDireccion() . "\n";
                     echo "Ingrese el nuevo nombre para la Empresa: \n";
                     $nombreNuevo = trim(fgets(STDIN));
                     echo "Ingrese la nueva dirección para la Empresa: \n";
@@ -128,13 +130,20 @@ function menuDeEmpresa(){
                 echo "Ingrese ID de la Empresa a eliminar: \n";
                 $idEmp = trim(fgets(STDIN));
 
+                if (!is_numeric($idEmp)) {
+                    echo "El ID de la Empresa debe ser numérico.\n";
+                    break;
+                }
+
                 $objEmp = new Empresa();
-                if($objEmp->buscar($idEmp)){
-                    if($objEmp->eliminar()) {
+                if ($objEmp->buscar($idEmp)) {
+                    if ($objEmp->eliminar()) {
                         echo "Su Empresa ha sido eliminada.\n";
                     } else {
                         echo "Ha habido un error al eliminar su Empresa.\n";
                     }
+                } else {
+                    echo "No se encontró la Empresa con ese ID.\n";
                 }
                 break;
             case 4:
@@ -142,26 +151,35 @@ function menuDeEmpresa(){
                 echo "Ingrese ID de la Empresa a buscar: \n";
                 $idEmp = trim(fgets(STDIN));
 
+                if (!is_numeric($idEmp)) {
+                    echo "El ID de la Empresa debe ser numérico.\n";
+                    break;
+                }
+
                 $objEmp = new Empresa();
-                if($objEmp->buscar($idEmp)){
+                if ($objEmp->buscar($idEmp)) {
                     echo "Su Empresa ha sido encontrada: \n";
-                    echo $objEmp . "\n";
+                    echo "Id de Empresa: " . $objEmp->getIdEmpresa() . "\n";
+                    echo "Nombre de Empresa: " . $objEmp->getNombre() . "\n";
+                    echo "Dirección: " . $objEmp->getDireccion() . "\n";
                 } else {
-                    echo "El ID es Incorrecto o la Empresa no existe.\n";
+                    echo "El ID es incorrecto o la Empresa no existe.\n";
                 }
                 break;
             case 5:
                 echo "OPCIÓN LISTAR EMPRESA\n";
-                $objEmp = new Empresa();
-                $empLista = $objEmp->listar();
-                $msj = "";
-                if($empLista != null){
-                    foreach($empLista as $emp){
-                        $msj .= $emp . "\n";
+                $empresaObj = new Empresa();
+                $empresas = $empresaObj->listar();
+
+                if (!empty($empresas)) {
+                    foreach ($empresas as $empresa) {
+                        echo "Id de Empresa: " . $empresa->getIdEmpresa() . "\n";
+                        echo "Nombre de Empresa: " . $empresa->getNombre() . "\n";
+                        echo "Dirección: " . $empresa->getDireccion() . "\n";
+                        echo "\n";
                     }
-                    echo $msj;
                 } else {
-                    echo "No hay Empresas cargadas.\n";
+                    echo "No hay empresas disponibles.\n";
                 }
                 break;
             case 6:
@@ -198,86 +216,117 @@ function menuDeViaje(){
                 $destinoViaje = trim(fgets(STDIN));
                 echo "Ingrese la capacidad max. de pasajeros del Viaje: \n";
                 $cantMax = trim(fgets(STDIN));
+                if (!is_numeric($cantMax)) {
+                    echo "La cantidad máxima de pasajeros debe ser un número.\n";
+                    break;
+                }
                 echo "Ingrese ID de la Empresa: \n";
                 $idEmp = trim(fgets(STDIN));
+                if (!is_numeric($idEmp)) {
+                    echo "El ID de la empresa debe ser un número.\n";
+                    break;
+                }
                 //Creo el objeto de la empresa para el id y lo busco
                 $objEmp = new Empresa();
-                if(!$objEmp->buscar($idEmp)){
+                if (!$objEmp->buscar($idEmp)) {
                     echo "Esta Empresa no ha sido encontrada.\n";
-                    $objEmp = null;
+                    break;
                 }
                 echo "Ingrese el nro de Empleado del Responsable del Viaje: \n";
                 $nroEmp = trim(fgets(STDIN));
-
+                if (!is_numeric($nroEmp)) {
+                    echo "El número de empleado del responsable debe ser un número.\n";
+                    break;
+                }
                 // Creo el objeto ResponsableV y lo busco
                 $objRespV = new ResponsableV();
                 if (!$objRespV->buscar($nroEmp)) {
                     echo "Este Responsable no ha sido encontrado.\n";
-                    $objRespV = null; // Reinicializar el objeto si no se encuentra
+                    break;
                 }
                 echo "Ingrese el Importe a pagar en el Viaje: \n";
                 $importe = trim(fgets(STDIN));
+                if (!is_numeric($importe)) {
+                    echo "El importe debe ser un número.\n";
+                    break;
+                }
                 //Creo el objeto viaje
                 $objViaje = new Viaje();
-                
                 $objViaje->cargar(0, $destinoViaje, $cantMax, $objEmp, $objRespV, $importe, []);
-                if($objViaje->insertar()) {
-                    echo "Su Viaje ha sido agregada.\n";
+                if ($objViaje->insertar()) {
+                    echo "Su Viaje ha sido agregado.\n";
                 } else {
                     echo "Ha habido un error al cargar su Viaje.\n";
                 }
                 break;
+    
             case 2:
                 echo "OPCIÓN MODIFICAR Viaje\n";
                 echo "Ingrese ID de la Viaje a modificar: \n";
                 $idViaje = trim(fgets(STDIN));
-
+                if (!is_numeric($idViaje)) {
+                    echo "El ID del viaje debe ser un número.\n";
+                    break;
+                }
+    
                 $objViaje = new Viaje();
-                if ($objViaje->buscar($idViaje)) {//Busco le Viaje con el id ingresado
+                if ($objViaje->buscar($idViaje)) {//Busco el Viaje con el id ingresado
                     echo "Viaje encontrado: \n";
                     echo "Ingrese el nuevo destino de viaje: \n";
                     $destinoViaje = trim(fgets(STDIN));
-                    //Evaluamos que si ingresa un destino como vacio, el destino seguirá siendo el mismo
-                    if($destinoViaje == ''){
+                    //Evaluamos que si ingresa un destino como vacío, el destino seguirá siendo el mismo
+                    if ($destinoViaje == '') {
                         $destinoViaje = $objViaje->getVDestino();
                     }
-
+    
                     echo "Ingrese la nueva cantidad max. de Pasajeros en el Viaje: \n";
                     $cantMax = trim(fgets(STDIN));
-                    if($cantMax == ''){
+                    if ($cantMax == '') {
                         $cantMax = $objViaje->getVCantMaxPasajeros();
+                    } elseif (!is_numeric($cantMax)) {
+                        echo "La cantidad máxima de pasajeros debe ser un número.\n";
+                        break;
                     }
-                    //Hago lo mismo que hice con el destino :v
-
+                    //Hago lo mismo que hice con el destino
+    
                     echo "Ingrese el nuevo ID de Empresa: \n";
                     $idEmp = trim(fgets(STDIN));
                     $objEmp = new Empresa;
                     //Evaluamos que exista la Empresa
-                    if($idEmp != "" && !$objEmp->buscar($idEmp)){
+                    if ($idEmp != "" && !$objEmp->buscar($idEmp)) {
                         echo "Esta Empresa no ha sido encontrada. Es probable que no exista.\n";
+                        break;
                     }
-                    if($idEmp == ""){
+                    if ($idEmp == "") {
                         $objEmp = $objViaje->getObjEmpresa();
                     }
-
+    
                     echo "Ingrese el nuevo nro de empleado del Responsable del Viaje: \n";
-                    $nroEmpleado= trim(fgets(STDIN));
+                    $nroEmpleado = trim(fgets(STDIN));
                     $objRespV = new ResponsableV();
                     //Hago lo mismo que con el id de la empresa
                     if ($nroEmpleado != "" && !$objRespV->Buscar($nroEmpleado)) {
                         echo "Esta Responsable no ha sido encontrado. Es probable que no exista.\n";
                         $objRespV = $objViaje->getObjResponsable();
+                    } elseif ($nroEmpleado == "") {
+                        $objRespV = $objViaje->getObjResponsable();
+                    } elseif (!is_numeric($nroEmpleado)) {
+                        echo "El número de empleado del responsable debe ser un número.\n";
+                        break;
                     }
-
+    
                     echo "Ingrese el nuevo Importe del Viaje: \n";
                     $importe = trim(fgets(STDIN));
-                    if($importe == ""){
+                    if ($importe == "") {
                         $importe = $objViaje->getVImporte();
+                    } elseif (!is_numeric($importe)) {
+                        echo "El importe debe ser un número.\n";
+                        break;
                     }
-                    
-                    //Cargamos todos los datoides
+    
+                    //Cargamos todos los datos
                     $objViaje->cargar($idViaje, $destinoViaje, $cantMax, $objEmp, $objRespV, $importe);
-
+    
                     if ($objViaje->modificar()) {
                         echo "Su Viaje ha sido modificado.\n";
                     } else {
@@ -292,60 +341,112 @@ function menuDeViaje(){
                 echo "Ingrese ID de la Viaje a eliminar: \n";
                 $idViaje = trim(fgets(STDIN));
 
+                if (!is_numeric($idViaje)) {
+                    echo "El ID del Viaje debe ser numérico.\n";
+                    break;
+                }
+
                 $objViaje = new Viaje();
-                if($objViaje->buscar($idViaje)){
-                    if($objViaje->eliminar()) {
-                        echo "Su Viaje ha sido eliminada.\n";
+                if ($objViaje->buscar($idViaje)) {
+                    if ($objViaje->eliminar()) {
+                        echo "Su Viaje ha sido eliminado.\n";
                     } else {
                         echo "Ha habido un error al eliminar su Viaje.\n";
                     }
+                } else {
+                    echo "No se encontró el Viaje con ese ID.\n";
                 }
                 break;
             case 4:
-                echo "OPCIÓN BUSCAR Viaje\n";
-                echo "Ingrese ID de la Viaje a buscar: \n";
+                echo "OPCIÓN BUSCAR VIAJE\n";
+                echo "Ingrese ID del viaje a buscar: \n";
                 $idViaje = trim(fgets(STDIN));
 
+                if (!is_numeric($idViaje)) {
+                    echo "El ID del Viaje debe ser numérico.\n";
+                    break;
+                }
+
                 $objViaje = new Viaje();
-                if($objViaje->buscar($idViaje)){
-                    echo "Su Viaje ha sido encontrada: \n";
-                    echo $objViaje . "\n";
+                if ($objViaje->buscar($idViaje)) {
+                    echo "Viaje encontrado: \n";
+                    echo "Id de Viaje: " . $objViaje->getIdViaje() . "\n";
+                    echo "Destino: " . $objViaje->getVDestino() . "\n";
+                    echo "Cantidad Máxima de Pasajeros: " . $objViaje->getVCantMaxPasajeros() . "\n";
+                    echo "Importe: " . $objViaje->getVImporte() . "\n";
+                    
+                    // Mostrar datos de la Empresa
+                    $empresa = $objViaje->getObjEmpresa();
+                    echo "Id de Empresa: " . $empresa->getIdEmpresa() . "\n";
+                    echo "Nombre de Empresa: " . $empresa->getNombre() . "\n";
+                    echo "Dirección de Empresa: " . $empresa->getDireccion() . "\n";
+                    
+                    // Mostrar datos del Responsable
+                    $responsable = $objViaje->getObjResponsable();
+                    echo "Número de Empleado Responsable: " . $responsable->getNroEmpleado() . "\n";
+                    echo "Nombre del Responsable: " . $responsable->getNombre() . "\n";
+                    echo "Apellido del Responsable: " . $responsable->getApellido() . "\n";
+                    echo "Número de Licencia del Responsable: " . $responsable->getNroLicencia() . "\n";
+                    
+                    echo "\n";
                 } else {
-                    echo "El ID es Incorrecto o el Viaje no existe.\n";
+                    echo "Este Viaje no existe o el ID es incorrecto.\n";
                 }
                 break;
             case 5:
-                echo "OPCIÓN LISTAR Viaje\n";
+                echo "OPCIÓN LISTAR VIAJE\n";
                 $objViaje = new Viaje();
                 $viajeLista = $objViaje->listar();
-                $msj = "";
-                if($viajeLista != null){
-                    foreach($viajeLista as $viaje){
-                        $msj .= $viaje . "\n";
+
+                if ($viajeLista != null) {
+                    foreach ($viajeLista as $viaje) {
+                        echo "Id de Viaje: " . $viaje->getIdViaje() . "\n";
+                        echo "Destino: " . $viaje->getVDestino() . "\n";
+                        echo "Cantidad Máxima de Pasajeros: " . $viaje->getVCantMaxPasajeros() . "\n";
+                        echo "Importe: " . $viaje->getVImporte() . "\n";
+                        
+                        // Mostrar datos de la Empresa
+                        $empresa = $viaje->getObjEmpresa();
+                        echo "Id de Empresa: " . $empresa->getIdEmpresa() . "\n";
+                        echo "Nombre de Empresa: " . $empresa->getNombre() . "\n";
+                        echo "Dirección de Empresa: " . $empresa->getDireccion() . "\n";
+                        
+                        // Mostrar datos del Responsable
+                        $responsable = $viaje->getObjResponsable();
+                        echo "Número de Empleado Responsable: " . $responsable->getNroEmpleado() . "\n";
+                        echo "Nombre del Responsable: " . $responsable->getNombre() . "\n";
+                        echo "Apellido del Responsable: " . $responsable->getApellido() . "\n";
+                        echo "Número de Licencia del Responsable: " . $responsable->getNroLicencia() . "\n";
+                        
+                        echo "------------------------------------------\n";
                     }
-                    echo $msj;
                 } else {
                     echo "No hay Viajes cargados.\n";
                 }
                 break;
             case 6:
-                echo "OPCIÓN LISTAR Pasajeros del Viaje\n";
+                echo "OPCIÓN LISTAR PASAJEROS DEL VIAJE\n";
                 echo "Ingrese ID del viaje en el que quiera ver los Pasajeros: \n";
                 $idViaje = trim(fgets(STDIN));
                 $objViaje = new Viaje();
 
-                if($objViaje->buscar($idViaje)){
-                    $objPasaj = new Pasajero();
-                    $colecPasajeros = $objPasaj->listar();
+                if ($objViaje->buscar($idViaje)) {
+                    $pasajeros = $objViaje->getColPasajeros();
 
-                    echo "Viaje con ID: " . $idViaje . "\nLista de Pasajeros: \n";
-                    $msj = "";
-                    foreach($colecPasajeros as $pasaj){
-                        $msj .= "\n" . $pasaj . "\n";
+                    if (!empty($pasajeros)) {
+                        echo "Viaje con ID: " . $idViaje . "\nLista de Pasajeros: \n";
+                        foreach ($pasajeros as $pasajero) {
+                            echo "Documento: " . $pasajero->getDocumento() . "\n";
+                            echo "Nombre: " . $pasajero->getNombre() . "\n";
+                            echo "Apellido: " . $pasajero->getApellido() . "\n";
+                            echo "Teléfono: " . $pasajero->getTelefono() . "\n";
+                            echo "------------------------------------------\n";
+                        }
+                    } else {
+                        echo "No hay pasajeros para este viaje.\n";
                     }
-                    echo $msj;
                 } else {
-                    echo "Este Viaje no existe o el ID es el incorrecto.";
+                    echo "Este Viaje no existe o el ID es el incorrecto.\n";
                 }
                 break;
             case 7:
@@ -383,8 +484,16 @@ function menuDeResponsableV() {
                 $apellido = trim(fgets(STDIN));
                 echo "Ingrese el N° de Documento del Responsable: \n";
                 $dni = trim(fgets(STDIN));
+                if (!is_numeric($dni)) {
+                    echo "El N° de Documento debe ser un número.\n";
+                    break;
+                }
                 echo "Ingrese N° de Licencia: \n";
                 $numLic = trim(fgets(STDIN));
+                if (!is_numeric($numLic)) {
+                    echo "El N° de Licencia debe ser un número.\n";
+                    break;
+                }
                 // Crear un objeto ResponsableV
                 $objRespV = new ResponsableV();
             
@@ -409,7 +518,11 @@ function menuDeResponsableV() {
                     echo "OPCIÓN MODIFICAR Responsable\n";
                     echo "Ingrese el nro de empleado del Responsable a modificar: \n";
                     $nroEmpleado = trim(fgets(STDIN));
-    
+                    if (!is_numeric($nroEmpleado)) {
+                        echo "El N° de empleado debe ser un número.\n";
+                        break;
+                    }
+        
                     $objRespV = new ResponsableV();
                     if ($objRespV->buscar($nroEmpleado)) {
                         echo "Ingrese el nuevo Nombre del Responsable (actual: " . $objRespV->getNombre() . "): \n";
@@ -418,7 +531,11 @@ function menuDeResponsableV() {
                         $apellido = trim(fgets(STDIN));
                         echo "Ingrese el nuevo N° de Licencia (actual: " . $objRespV->getNroLicencia() . "): \n";
                         $numLic = trim(fgets(STDIN));
-
+                        if (!is_numeric($numLic)) {
+                            echo "El N° de Licencia debe ser un número.\n";
+                            break;
+                        }
+        
                         // Verificar y mantener los valores existentes si están vacíos
                         if (empty($nombre)) {
                             $nombre = $objRespV->getNombre();
@@ -429,7 +546,7 @@ function menuDeResponsableV() {
                         if (empty($numLic)) {
                             $numLic = $objRespV->getNroLicencia();
                         }
-    
+        
                         $objRespV->cargar($objRespV->getDocumento(), $nombre, $apellido, $nroEmpleado, $numLic);
                         if ($objRespV->modificar()) {
                             echo "El Responsable ha sido modificado.\n";
@@ -446,6 +563,11 @@ function menuDeResponsableV() {
                     echo "OPCIÓN ELIMINAR Responsable\n";
                     echo "Ingrese el nro de empleado del Responsable a eliminar: \n";
                     $nroEmpleado = trim(fgets(STDIN));
+
+                    if (!is_numeric($nroEmpleado)) {
+                        echo "El Nro del Empleado debe ser numérico.\n";
+                        break;
+                    }
     
                     $objRespV = new ResponsableV();
                     if ($objRespV->buscar($nroEmpleado)) {
@@ -464,10 +586,21 @@ function menuDeResponsableV() {
                     echo "OPCIÓN BUSCAR Responsable\n";
                     echo "Ingrese el nro de empleado del Responsable a buscar: \n";
                     $nroEmpleado = trim(fgets(STDIN));
-    
+
+                    if (!is_numeric($nroEmpleado)) {
+                        echo "El Nro del Empleado debe ser numérico.\n";
+                        break;
+                    }
+
                     $objRespV = new ResponsableV();
                     if ($objRespV->buscar($nroEmpleado)) {
-                        echo $objRespV;
+                        echo "Responsable encontrado: \n";
+                        echo "Documento: " . $objRespV->getDocumento() . "\n";
+                        echo "Nombre: " . $objRespV->getNombre() . "\n";
+                        echo "Apellido: " . $objRespV->getApellido() . "\n";
+                        echo "Número de Empleado: " . $objRespV->getNroEmpleado() . "\n";
+                        echo "Número de Licencia: " . $objRespV->getNroLicencia() . "\n";
+                        echo "\n";
                     } else {
                         echo "No se encontró un Responsable con ese nro de empleado.\n";
                     }
@@ -477,10 +610,15 @@ function menuDeResponsableV() {
                     echo "OPCIÓN LISTAR Responsables\n";
                     $objRespV = new ResponsableV();
                     $colResponsables = $objRespV->listar();
-    
-                    if (count($colResponsables) > 0) {
+
+                    if (!empty($colResponsables)) {
                         foreach ($colResponsables as $respV) {
-                            echo $respV . "\n";
+                            echo "Documento: " . $respV->getDocumento() . "\n";
+                            echo "Nombre: " . $respV->getNombre() . "\n";
+                            echo "Apellido: " . $respV->getApellido() . "\n";
+                            echo "Número de Empleado: " . $respV->getNroEmpleado() . "\n";
+                            echo "Número de Licencia: " . $respV->getNroLicencia() . "\n";
+                            echo "------------------------------------------\n";
                         }
                     } else {
                         echo "No hay Responsables para listar.\n";
@@ -521,33 +659,54 @@ function menuDePasajero() {
                 echo "OPCIÓN AGREGAR Pasajero\n";
                 echo "Ingrese el ID del Viaje al que pertenece el Pasajero: \n";
                 $idViaje = trim(fgets(STDIN));
-
+            
+                // Verificar si el idViaje es numérico
+                if (!is_numeric($idViaje)) {
+                    echo "El ID del Viaje debe ser numérico.\n";
+                    break;
+                }
+            
                 // Verificar si el viaje existe
                 $objViaje = new Viaje();
                 if (!$objViaje->buscar($idViaje)) {
                     echo "El Viaje con ID $idViaje no existe.\n";
                     break;
                 }
+            
                 // Verificar disponibilidad de pasajes
                 if (!$objViaje->pasajeDisponible()) {
                     echo "El viaje seleccionado está lleno.\n";
                     break;
                 }
+            
                 // Continuar con la carga de datos del pasajero
                 $objPasajero = new Pasajero();
-
+            
                 echo "Ingrese el nombre del Pasajero: \n";
                 $nombre = trim(fgets(STDIN));
                 echo "Ingrese el apellido del Pasajero: \n";
                 $apellido = trim(fgets(STDIN));
                 echo "Ingrese el teléfono del Pasajero: \n";
                 $telefono = trim(fgets(STDIN));
+            
+                // Verificar si el teléfono es numérico
+                if (!is_numeric($telefono)) {
+                    echo "El teléfono debe ser numérico.\n";
+                    break;
+                }
+            
                 echo "Ingrese el documento del Pasajero: \n";
                 $documento = trim(fgets(STDIN));
-
+            
+                // Verificar si el documento es numérico
+                if (!is_numeric($documento)) {
+                    echo "El documento debe ser numérico.\n";
+                    break;
+                }
+            
                 // Crear el objeto Pasajero y cargar los datos
-                $objPasajero->cargar($documento, $nombre,$apellido, 0, $telefono, $objViaje);
-
+                $objPasajero->cargar($documento, $nombre, $apellido, 0, $telefono, $objViaje);
+            
                 // Insertar el pasajero en la base de datos
                 $id = $objPasajero->getIdPasajero();
                 if ($objPasajero->buscar($id)) {
@@ -569,6 +728,12 @@ function menuDePasajero() {
 
                 // Verificar si el pasajero existe
                 $objPasajero = new Pasajero();
+
+                if (!is_numeric($id)) {
+                    echo "El ID del Pasajero debe ser numérico.\n";
+                    break;
+                }
+
                 if (!$objPasajero->buscar($id)) {
                     echo "El Pasajero con ID: $id no existe.\n";
                     break;
@@ -580,7 +745,7 @@ function menuDePasajero() {
                 $apellido = trim(fgets(STDIN));
                 echo "Ingrese el nuevo teléfono del Pasajero (dejar en blanco para mantener el actual): \n";
                 $telefono = trim(fgets(STDIN));
-
+                
                 // Modificar el pasajero en la base de datos y verificar q no esten vacios
                 if (empty($nombre)) {
                     $nombre = $objPasajero->getNombre();
@@ -610,6 +775,10 @@ function menuDePasajero() {
                 echo "OPCIÓN ELIMINAR Pasajero\n";
                 echo "Ingrese ID del Pasajero que desea eliminar: \n";
                 $id = trim(fgets(STDIN));
+                if (!is_numeric($id)) {
+                    echo "El ID del Pasajero debe ser numérico.\n";
+                    break;
+                }
 
                 // Verificar si el pasajero existe
                 $objPasajero = new Pasajero();
@@ -631,12 +800,25 @@ function menuDePasajero() {
                 echo "OPCIÓN BUSCAR Pasajero\n";
                 echo "Ingrese el ID del Pasajero que desea buscar: \n";
                 $id = trim(fgets(STDIN));
-
+                
+                // Verificar si el ID del Pasajero es numérico
+                if (!is_numeric($id)) {
+                    echo "El ID del Pasajero debe ser numérico.\n";
+                    break;
+                }
+                
                 // Buscar el pasajero en la base de datos
                 $objPasajero = new Pasajero();
                 if ($objPasajero->buscar($id)) {
                     echo "Información del Pasajero:\n";
-                    echo $objPasajero;
+                    echo "ID de Pasajero: " . $objPasajero->getIdPasajero() . "\n";
+                    echo "Nombre: " . $objPasajero->getNombre() . "\n";
+                    echo "Apellido: " . $objPasajero->getApellido() . "\n";
+                    echo "Teléfono: " . $objPasajero->getTelefono() . "\n";
+                    echo "Documento: " . $objPasajero->getDocumento() . "\n";
+                    
+                    // Mostrar id del Viaje al que pertenece el Pasajero
+                    echo "ID de Viaje: ". $objPasajero->getObjViaje() . "\n";
                 } else {
                     echo "El Pasajero con el ID: $id no fue encontrado.\n";
                 }
@@ -652,8 +834,13 @@ function menuDePasajero() {
                 if (!empty($listaPasajeros)) {
                     echo "Lista de Pasajeros:\n";
                     foreach ($listaPasajeros as $pasajero) {
-                        echo $pasajero;
-                        echo "----------------\n";
+                        echo "ID del Viaje: " . $pasajero->getObjViaje() . "\n";
+                        echo "Nombre: " . $pasajero->getNombre() . "\n";
+                        echo "Apellido: " . $pasajero->getApellido() . "\n";
+                        echo "Teléfono: " . $pasajero->getTelefono() . "\n";
+                        echo "Documento: " . $pasajero->getDocumento() . "\n";
+                        echo "ID de Pasajero: " . $pasajero->getIdPasajero() . "\n";
+                        echo "------------------------------------------\n";
                     }
                 } else {
                     echo "No se encontraron pasajeros.\n";

@@ -81,7 +81,7 @@ class Persona{
             $consultaPersonas=$consultaPersonas.' WHERE '.$condicion;
         }
         $consultaPersonas.=" order by idpersonas ";
-        //echo $consultaPersonas;
+        
         if($base->Iniciar()){
             if($base->Ejecutar($consultaPersonas)){
                 $arregloPersona= array();
@@ -115,11 +115,9 @@ class Persona{
                 $resp = true;
             } else {
                 $this->setMsjOperacion($base->getERROR());
-                echo "Error al ejecutar consulta: " . $base->getERROR() . "\n";
             }
         } else {
             $this->setMsjOperacion($base->getERROR());
-            echo "Error al iniciar la conexión: " . $base->getERROR() . "\n";
         }
         return $resp;
     }
@@ -132,29 +130,29 @@ class Persona{
         $consultaUpdate = "UPDATE persona SET apellido='" . $this->getApellido() . "', nombre='" . $this->getNombre() .
                           "' WHERE documento=" . $this->getDocumento();
     
-        echo "Debug: Consulta UPDATE: " . $consultaUpdate . "\n";
-        echo "Debug: Apellido: " . $this->getApellido() . ", Nombre: " . $this->getNombre() . ", Documento: " . $this->getDocumento() . "\n";
+        //echo "Debug: Consulta UPDATE: " . $consultaUpdate . "\n";
+        //echo "Debug: Apellido: " . $this->getApellido() . ", Nombre: " . $this->getNombre() . ", Documento: " . $this->getDocumento() . "\n";
     
         if ($base->Iniciar()) {
-            echo "Debug: Conexión con la base de datos iniciada.\n";
+            //echo "Debug: Conexión con la base de datos iniciada.\n";
     
             if ($base->Ejecutar($consultaUpdate)) {
                 $resp = true;
                 $this->setMsjOperacion("¡Modificación exitosa en la tabla persona!");
             } else {
                 $this->setMsjOperacion("Error al ejecutar la modificación en la tabla persona: " . $base->getERROR());
-                echo "Debug: Error en la ejecución: " . $base->getERROR() . "\n";
+                //echo "Debug: Error en la ejecución: " . $base->getERROR() . "\n";
             }
         } else {
     
             $this->setMsjOperacion("Error al iniciar la conexión para modificar persona: " . $base->getERROR());
-            echo "Debug: Error al iniciar la conexión: " . $base->getERROR() . "\n";
+            //echo "Debug: Error al iniciar la conexión: " . $base->getERROR() . "\n";
         }
     
         if ($resp) {
-            echo "Debug: Persona modificada exitosamente.\n";
+            //echo "Debug: Persona modificada exitosamente.\n";
         } else {
-            echo "Debug: Fallo al modificar la persona.\n";
+            //echo "Debug: Fallo al modificar la persona.\n";
         }
     
         return $resp;
@@ -179,9 +177,4 @@ class Persona{
 		return $resp; 
 	}
 
-	public function __toString(){
-		return "\nNombre: ".$this->getNombre(). 
-		"\n Apellido:".$this->getApellido().
-		"\n DNI: ".$this->getDocumento();
-	}
 }
