@@ -175,7 +175,6 @@ class Pasajero extends Persona{
     public function modificar() {
         $resp = false;
         $base = new BaseDatos();
-        if ($this->buscar($this->getIdPasajero())) {
             if (parent::modificar()) {
                 $consultaUpdate = "UPDATE pasajero SET ptelefono = '" . $this->getTelefono() . "', idviaje = '" . $this->getObjViaje() . "' WHERE idpasajeros = '" . $this->getIdPasajero() . "'";
             }
@@ -188,7 +187,6 @@ class Pasajero extends Persona{
             } else {
                 $this->setMsjOperacion($base->getERROR());
             }
-        }
         return $resp;
     }
   
