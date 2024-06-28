@@ -244,6 +244,9 @@ function menuDeViaje(){
 
                     echo "Ingrese la nueva cantidad max. de Pasajeros en el Viaje: \n";
                     $cantMax = trim(fgets(STDIN));
+                    if($cantMax == ''){
+                        $cantMax = $objViaje->getVCantMaxPasajeros();
+                    }
                     //Hago lo mismo que hice con el destino :v
 
                     echo "Ingrese el nuevo ID de Empresa: \n";
@@ -271,7 +274,7 @@ function menuDeViaje(){
                     if($importe == ""){
                         $importe = $objViaje->getVImporte();
                     }
-
+                    
                     //Cargamos todos los datoides
                     $objViaje->cargar($idViaje, $destinoViaje, $cantMax, $objEmp, $objRespV, $importe);
 
@@ -415,6 +418,17 @@ function menuDeResponsableV() {
                         $apellido = trim(fgets(STDIN));
                         echo "Ingrese el nuevo N° de Licencia (actual: " . $objRespV->getNroLicencia() . "): \n";
                         $numLic = trim(fgets(STDIN));
+
+                        // Verificar y mantener los valores existentes si están vacíos
+                        if (empty($nombre)) {
+                            $nombre = $objRespV->getNombre();
+                        }
+                        if (empty($apellido)) {
+                            $apellido = $objRespV->getApellido();
+                        }
+                        if (empty($numLic)) {
+                            $numLic = $objRespV->getNroLicencia();
+                        }
     
                         $objRespV->cargar($objRespV->getDocumento(), $nombre, $apellido, $nroEmpleado, $numLic);
                         if ($objRespV->modificar()) {
@@ -567,10 +581,22 @@ function menuDePasajero() {
                 echo "Ingrese el nuevo teléfono del Pasajero (dejar en blanco para mantener el actual): \n";
                 $telefono = trim(fgets(STDIN));
 
-                // Modificar el pasajero en la base de datos
-                $objPasajero->setNombre($nombre);
-                $objPasajero->setApellido($apellido);
-                $objPasajero->setTelefono($telefono);
+                // Modificar el pasajero en la base de datos y verificar q no esten vacios
+                if (empty($nombre)) {
+                    $nombre = $objPasajero->getNombre();
+                } else {
+                    $objPasajero->setNombre($nombre);
+                }
+                if (empty($apellido)) {
+                    $apellido = $objPasajero->getApellido();
+                } else {
+                    $objPasajero->setApellido($apellido);
+                }
+                if (empty($telefono)) {
+                    $telefono = $objPasajero->getTelefono();
+                } else {
+                    $objPasajero->setTelefono($telefono);
+                }
 
                 if ($objPasajero->modificar()) {
                     echo "El Pasajero ha sido modificado correctamente.\n";
